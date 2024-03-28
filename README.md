@@ -16,7 +16,7 @@
   <a href="https://www.linkedin.com/in/gualter/">
     <img alt="Feito por: " src="https://img.shields.io/badge/Feito%20por%3A%20-Gualter%20Albino-%231158c7">
   </a>
-  <a href="https://github.com/GualterAlbino/Vue/commits/master">
+  <a href="https://github.com/GualterAlbino/WebServiceK6/commits/master">
     <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/GualterAlbino/Vue">
   </a>
 </p>
@@ -28,7 +28,9 @@
 2 - Acessar o arquivo `Constantes.js` e alterar o valor das variaveis `HOST`, `USUARIOS_VIRTUAIS` e `QTD_USUARIOS_VIRTUAIS` conforme a necessidade.
 Obs: Atentar ao fato de que o token do usuário não está sendo preenchido dinamicamente. Essa etapa deve ser realizada manualmente para cada usuário realizando a autenticação no postman e copiando o token gerado.
 
-3 - Executar o comando: `k6 run --insecure-skip-tls-verify main.js` para iniciar os testes.
+3 - Para utilizar os fluxos de cadastro de pedido de venda e geração de relatorios deve-se alterar as constantes presentes respectivamente nos arquivos `Relatorio.js` e `PedidoDeVenda.js` que se encontram no caminho: `src/DadosBody/`. Os valores a serem substituidos podem ser obtidos do DevTools do navegador ou da collection do Postman.
+
+4 - Executar o comando: `k6 run --insecure-skip-tls-verify main.js` para iniciar os testes.
 Obs: O parâmetro `--insecure-skip-tls-verify` é utilizado para ignorar a verificação de certificado SSL.
 Obs: O arquivo `main.js` contém o fluxo padrão, podendo ser alterado conforme a necessidade.
 
