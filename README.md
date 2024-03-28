@@ -1,9 +1,16 @@
-# Teste de Carga/Stress a API do WebService utilizando K6.io
+<div align="center">
+  
+  # Teste de Carga/Stress a API do WebService utilizando K6.io
+  
+</div>
 
-<h1 align="center">
-  Utilização do K6.io para executar rotina/fluxos mais utilizados pelos usuários. Lembrando que o K6.io é uma ferramenta de código aberto que permite a execução de testes de carga e stress em aplicações web que nada tem a ver com Node.js, mas sim com Go. Porém, os testes são escritos em JavaScript.
+
+<h3 >
+  Utilização do K6.io para executar rotina/fluxos mais utilizados pelos usuários. Lembrando que o K6.io é uma ferramenta de código aberto que permite a execução de testes de carga e stress em aplicações web que nada tem a ver com Node.js, mas sim com Go. Porém, os   testes são escritos em JavaScript.
+
+
   Mais em: https://k6.io/docs/ 
-</h1>
+</h3>
 
 <p align="center">
   <a href="https://www.linkedin.com/in/gualter/">
@@ -25,14 +32,16 @@ Obs: Atentar ao fato de que o token do usuário não está sendo preenchido dina
 Obs: O parâmetro `--insecure-skip-tls-verify` é utilizado para ignorar a verificação de certificado SSL.
 Obs: O arquivo `main.js` contém o fluxo padrão, podendo ser alterado conforme a necessidade.
 
-## :rocket: Tecnologias
+## 📝 Outros
+- O projeto foi desenvolvido com o intuito de realizar testes de carga e stress na API do WebService.
+- Necessário melhorar forma de autenticação para que não seja mais necessario preencher os tokens manualmente. Atualmente é feito assim pelo fato dos usuários virtuais serem executados simultaneamente de forma desorndenada fazendo com que o token fique por um breve momento inválido no pUsuario.token. Ao deixar ele estático isso não acontece.
+- Esse é um protótipo utilizado para testar a ferramenta e verificar a viabilidade de utilização em projetos futuros.
 
+
+## :rocket: Tecnologias
 As seguintes tecnologias foram utilizadas no projeto:
 
 - [JavaScript](https://developer.mozilla.org/pt-BR/docs/Web/JavaScript)
 - [K6.io](https://k6.io/)
 
-## :white_check_mark: Outros
 
-- O projeto foi desenvolvido com o intuito de realizar testes de carga e stress na API do WebService.
-- Esse é um protótipo utilizado para testar a ferramenta e verificar a viabilidade de utilização em projetos futuros.
