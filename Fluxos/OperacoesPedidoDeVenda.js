@@ -172,3 +172,16 @@ export function validarDiferenciacoes(pUsuario = null, pBodyPedido = null) {
   }
   return true;
 }
+
+/**
+ * Valida os descontos aplicados no pedido
+ */
+export function validarDescontos(pUsuario = null, pBodyPedido = null) {
+  if (!pUsuario) return;
+  if (!pBodyPedido) return;
+
+  const retorno = postGenerico('/api/pedido/descontos', pBodyPedido, pUsuario, 'Cadastro de Pedido(Validar Descontos)').status;
+
+  if (retorno == 200) return true;
+  return false;
+}

@@ -2,7 +2,7 @@ import { sleep } from 'k6';
 import { bodyGerarRelatorio1, bodyGerarRelatorio2 } from '../DadosBody/Relatorio.js';
 import { bodyGravarPedido1 } from '../DadosBody/PedidoDeVenda.js';
 import { autenticar, getGenerico, postCadastroDinamico } from '../Base/EstruturaRest.js';
-import { consultarPedidos, abrirCadastroPedido, excluirPedidoVenda, incluirPedidoVenda, validarDiferenciacoes } from './OperacoesPedidoDeVenda.js';
+import { consultarPedidos, abrirCadastroPedido, excluirPedidoVenda, incluirPedidoVenda, validarDiferenciacoes, validarDescontos } from './OperacoesPedidoDeVenda.js';
 import { abrirCadastroCliente, consultarClientes, entrarModoEdicaoCliente, gravarCadastroEditadoCliente } from './OperacoesClientes.js';
 import { gerarRelatorio } from '../Fluxos/OperacoesRelatorio.js';
 
@@ -60,9 +60,11 @@ export function FluxoGerarRelatorio(pUsuario = null, pTipo = null, pCodigoRelato
 export function FluxoIncluirPedidoVenda(pUsuario = null) {
   if (!pUsuario) return;
 
-  const retorno = validarDiferenciacoes(pUsuario, bodyGravarPedido1.parametros);
+  const diferenciacoesValidas = validarDiferenciacoes(pUsuario, bodyGravarPedido1.parametros);
+  if (!diferenciacoesValidas) return;
 
-  if (!retorno) return;
+  const descontosValidos = validarDescontos(pUsuario, bodyGravarPedido1.parametros);
+  if (!descontosValidos) return;
 
   incluirPedidoVenda(pUsuario, bodyGravarPedido1);
 }
@@ -113,7 +115,6 @@ export function FluxoDuplicarPedidoVenda(pUsuario = null) {
     metodo: 'gravar',
     parametros: pedidoDuplicado
   };
-
 
   //Gravar Pedido
   postCadastroDinamico(pUsuario, bodyGravarPedido, 'Cadastro de Pedido(Gravar)');
