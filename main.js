@@ -2,7 +2,7 @@
 import { sleep } from 'k6';
 import { obterLog } from './Base/EstruturaRest.js';
 import { USUARIOS_VIRTUAIS, QTD_USUARIOS_VIRTUAIS, TEMPO_DURACAO_TESTE } from './Base/Constantes.js';
-import { FluxoAutenticacao, FluxoEdicaoCliente, FluxoIncluirPedidoVenda, FluxoExcluirPedidoVenda, FluxoGerarRelatorio } from './Fluxos/Fluxos.js';
+import { FluxoAutenticacao, FluxoEdicaoCliente, FluxoIncluirPedidoVenda, FluxoDuplicarPedidoVenda, FluxoExcluirPedidoVenda, FluxoGerarRelatorio } from './Fluxos/Fluxos.js';
 
 // Configurações do teste
 export let options = {

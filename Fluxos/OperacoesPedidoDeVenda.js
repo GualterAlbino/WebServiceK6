@@ -1,5 +1,5 @@
 import { sleep } from 'k6';
-import { getConsultaDinamica, postCadastroDinamico } from '../Base/EstruturaRest.js';
+import { getConsultaDinamica, postCadastroDinamico, postGenerico } from '../Base/EstruturaRest.js';
 
 /**
  * Consulta um pedido aleatoriamente, e retorna o codigo desse pedido
@@ -122,4 +122,53 @@ export function excluirPedidoVenda(pUsuario = null, pCodigoPedido = null) {
     }
   };
   postCadastroDinamico(pUsuario, bodyExcluirPedido, 'Cadastro de Pedido(Excluir)');
+}
+
+/**
+ * Validar diferenciação dos itens do pedido
+ */
+export function validarDiferenciacoes(pUsuario = null, pBodyPedido = null) {
+  if (!pUsuario) return;
+  if (!pBodyPedido) return;
+  if (!pBodyPedido.itens.length) return;
+
+  //Atribui o tipo do pedido (Assitência / Venda)
+  let tipoPedido = pBodyPedido.tipo;
+  let tabela = null;
+  let condicao = null;
+  let item = null;
+  let variacao = null;
+  let cor = null;
+  let acabamento = null;
+  let grade = null;
+
+  // Loop através dos itens
+  for (let i = 0; i < pBodyPedido.itens.length; i++) {
+    tabela = pBodyPedido.itens[i].tabelaPreco.codigo;
+    condicao = pBodyPedido.itens[i].condicaoTabela;
+    item = pBodyPedido.itens[i].item.codigo;
+    variacao = pBodyPedido.itens[i].variacao.codigo;
+    cor = pBodyPedido.itens[i].cor.codigo;
+    acabamento = pBodyPedido.itens[i].acabamento.codigo;
+    grade = pBodyPedido.itens[i].grade.codigo;
+
+    const retorno = postGenerico(
+      '/api/item/diferenciacao',
+      {
+        tipoPedido,
+        tabela,
+        condicao,
+        item,
+        variacao,
+        cor,
+        acabamento,
+        grade
+      },
+      pUsuario,
+      'Cadastro de Pedido(Validar Diferenciacao)'
+    ).status;
+
+    if (retorno == 500) return false;
+  }
+  return true;
 }

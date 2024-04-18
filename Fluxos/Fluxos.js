@@ -1,9 +1,10 @@
 import { sleep } from 'k6';
-import { bodyGerarRelatorio1 } from '../DadosBody/Relatorio.js';
+import { bodyGerarRelatorio1, bodyGerarRelatorio2 } from '../DadosBody/Relatorio.js';
 import { bodyGravarPedido1 } from '../DadosBody/PedidoDeVenda.js';
-import { autenticar, getGenerico, getGenericoComBody } from '../Base/EstruturaRest.js';
-import { consultarPedidos, abrirCadastroPedido, excluirPedidoVenda, incluirPedidoVenda } from './OperacoesPedidoDeVenda.js';
+import { autenticar, getGenerico, postCadastroDinamico } from '../Base/EstruturaRest.js';
+import { consultarPedidos, abrirCadastroPedido, excluirPedidoVenda, incluirPedidoVenda, validarDiferenciacoes } from './OperacoesPedidoDeVenda.js';
 import { abrirCadastroCliente, consultarClientes, entrarModoEdicaoCliente, gravarCadastroEditadoCliente } from './OperacoesClientes.js';
+import { gerarRelatorio } from '../Fluxos/OperacoesRelatorio.js';
 
 export function FluxoAutenticacao(pUsuario = null) {
   //------------------
@@ -47,14 +48,21 @@ export function FluxoEdicaoCliente(pUsuario = null) {
   sleep('1s');
 }
 
-export function FluxoGerarRelatorio(pUsuario = null) {
+export function FluxoGerarRelatorio(pUsuario = null, pTipo = null, pCodigoRelatorio = null, pBody = null) {
   if (!pUsuario) return;
-
-  getGenericoComBody('/api/relatorio/pedido/venda/78', pUsuario, bodyGerarRelatorio1, 'Gerar Relatório');
+  pTipo = 'cliente';
+  pCodigoRelatorio = 45;
+  pBody = bodyGerarRelatorio2;
+  gerarRelatorio(pUsuario, pTipo, pCodigoRelatorio, pBody);
+  //getGenericoComBody('/api/relatorio/pedido/venda/78', pUsuario, bodyGerarRelatorio1, 'Gerar Relatório');
 }
 
 export function FluxoIncluirPedidoVenda(pUsuario = null) {
   if (!pUsuario) return;
+
+  const retorno = validarDiferenciacoes(pUsuario, bodyGravarPedido1.parametros);
+
+  if (!retorno) return;
 
   incluirPedidoVenda(pUsuario, bodyGravarPedido1);
 }
@@ -69,4 +77,44 @@ export function FluxoExcluirPedidoVenda(pUsuario = null) {
   abrirCadastroPedido(pUsuario, codigoPedido);
 
   excluirPedidoVenda(pUsuario, codigoPedido);
+}
+
+export function FluxoDuplicarPedidoVenda(pUsuario = null) {
+  if (!pUsuario) return;
+
+  let pedido = null;
+  let pedidoDuplicado = null;
+
+  let codigoTabela = null;
+  let codigoPedido = null;
+  let codigoCliente = null;
+  let codigoCondicao = null;
+
+  codigoPedido = consultarPedidos(pUsuario);
+  if (!codigoPedido) return;
+
+  pedido = JSON.parse(abrirCadastroPedido(pUsuario, codigoPedido));
+  if (!pedido) return;
+
+  codigoCliente = pedido.cliente.codigo;
+  if (!codigoCliente) return;
+
+  codigoTabela = pedido.cliente.padraoCompra.tabelaPreco.codigo;
+  if (!codigoTabela) return;
+
+  codigoCondicao = pedido.cliente.padraoCompra.tabelaPreco.condicoes[0].codigo;
+  if (!codigoCondicao) return;
+
+  pedidoDuplicado = JSON.parse(duplicarPedidoVenda(pUsuario, codigoPedido, codigoCliente, codigoTabela, codigoCondicao));
+  if (!pedidoDuplicado) return;
+
+  const bodyGravarPedido = {
+    nomeClasse: 'TCadastroPedidoVendaDAO',
+    metodo: 'gravar',
+    parametros: pedidoDuplicado
+  };
+
+
+  //Gravar Pedido
+  postCadastroDinamico(pUsuario, bodyGravarPedido, 'Cadastro de Pedido(Gravar)');
 }
