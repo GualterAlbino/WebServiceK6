@@ -120,3 +120,59 @@ export const bodyGerarRelatorio1 = [
     valor: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
   }
 ];
+
+//Relatorio de Cliente
+export const bodyGerarRelatorio2 = [
+  {
+    id: 'embutirFontes',
+    valor: false
+  },
+  {
+    id: 'anotacoesInicio',
+    valor: ''
+  },
+  {
+    id: 'anotacoesFim',
+    valor: ''
+  },
+  {
+    id: 'anotacaoCabecalhos',
+    valor: ''
+  },
+  {
+    id: 'ordem',
+    valor: 0
+  },
+  {
+    id: 'FiltroCompactacao',
+    valor: 0
+  },
+  {
+    id: 'FiltroAbaStatus',
+    valor: ''
+  },
+  {
+    id: 'FiltroAbaPessoa',
+    valor: ''
+  },
+  {
+    id: 'FiltroAbaGrupo',
+    valor: ''
+  },
+  {
+    id: 'FiltroAbaCidade',
+    valor: ''
+  },
+  {
+    id: 'FiltroAbaRegiao',
+    valor: ''
+  },
+  {
+    id: 'FiltroAbaUF',
+    valor: ''
+  },
+  {
+    id: 'quebras',
+    valor: []
+  }
+];

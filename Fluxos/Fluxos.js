@@ -1,10 +1,18 @@
+// K6
 import { sleep } from 'k6';
-import { bodyGerarRelatorio1, bodyGerarRelatorio2 } from '../DadosBody/Relatorio.js';
-import { bodyGravarPedido1 } from '../DadosBody/PedidoDeVenda.js';
+
+//base do WebService
 import { autenticar, getGenerico, postCadastroDinamico } from '../Base/EstruturaRest.js';
-import { consultarPedidos, abrirCadastroPedido, excluirPedidoVenda, incluirPedidoVenda, validarDiferenciacoes, validarDescontos } from './OperacoesPedidoDeVenda.js';
+
+//Body's
+import { bodyGravarPedido1 } from '../DadosBody/PedidoDeVenda.js';
+import { bodyGerarRelatorio1, bodyGerarRelatorio2 } from '../DadosBody/Relatorio.js';
+
+//Operações
+import { gerarRelatorio } from './OperacoesRelatorio.js';
+import { consultarIndicadores, consultarIndicadorDetalhado } from './OperacoesIndicadores.js';
 import { abrirCadastroCliente, consultarClientes, entrarModoEdicaoCliente, gravarCadastroEditadoCliente } from './OperacoesClientes.js';
-import { gerarRelatorio } from '../Fluxos/OperacoesRelatorio.js';
+import { consultarPedidos, abrirCadastroPedido, excluirPedidoVenda, incluirPedidoVenda, validarDiferenciacoes, validarDescontos } from './OperacoesPedidoDeVenda.js';
 
 export function FluxoAutenticacao(pUsuario = null) {
   //------------------
@@ -46,6 +54,12 @@ export function FluxoEdicaoCliente(pUsuario = null) {
 
   gravarCadastroEditadoCliente(pUsuario, cadastroCliente);
   sleep('1s');
+}
+
+export function FluxoConsultarClientes(pUsuario = null) {
+  if (!pUsuario) return;
+
+  consultarClientes(pUsuario);
 }
 
 export function FluxoGerarRelatorio(pUsuario = null, pTipo = null, pCodigoRelatorio = null, pBody = null) {
@@ -118,4 +132,16 @@ export function FluxoDuplicarPedidoVenda(pUsuario = null) {
 
   //Gravar Pedido
   postCadastroDinamico(pUsuario, bodyGravarPedido, 'Cadastro de Pedido(Gravar)');
+}
+
+export function FluxoConsultarIndicadores(pUsuario = null) {
+  if (!pUsuario) return;
+
+  const codigoIndicador = consultarIndicadores(pUsuario);
+  if (!codigoIndicador) return;
+
+  const indicador = consultarIndicadorDetalhado(pUsuario, codigoIndicador);
+  if (!indicador) return;
+
+  return indicador;
 }
