@@ -9,7 +9,7 @@ import { bodyGravarPedido1 } from '../DadosBody/PedidoDeVenda.js';
 import { bodyGerarRelatorio1, bodyGerarRelatorio2 } from '../DadosBody/Relatorio.js';
 
 //Operações
-import { gerarRelatorio } from './OperacoesRelatorio.js';
+import { consultarFiltrosRelatorioEspecifico, consultarRelatoriosEspecificos, gerarRelatorioEspecifico } from './OperacoesRelatorio.js';
 import { consultarIndicadores, consultarIndicadorDetalhado } from './OperacoesIndicadores.js';
 import { abrirCadastroCliente, consultarClientes, entrarModoEdicaoCliente, gravarCadastroEditadoCliente } from './OperacoesClientes.js';
 import { consultarPedidos, abrirCadastroPedido, excluirPedidoVenda, incluirPedidoVenda, validarDiferenciacoes, validarDescontos } from './OperacoesPedidoDeVenda.js';
@@ -24,7 +24,7 @@ export function FluxoAutenticacao(pUsuario = null) {
 
   const infoProfile = JSON.parse(getGenerico('/api/profile/info', pUsuario, 'Info do Perfil').body);
   if (!infoProfile) return;
-  /*
+
   let empresa = infoProfile.empresas[0].codigo;
   let unidadeFabril = 0;
   if (infoProfile.utilizaUnidadeFabril) {
@@ -36,7 +36,6 @@ export function FluxoAutenticacao(pUsuario = null) {
   getGenerico('/api/profile/config', pUsuario, 'Config do Perfil');
 
   getGenerico('/api/mensagem/quantidade', pUsuario, 'Qtd de Mensagens');
-  */
 }
 
 export function FluxoEdicaoCliente(pUsuario = null) {
@@ -68,7 +67,19 @@ export function FluxoGerarRelatorio(pUsuario = null, pTipo = null, pCodigoRelato
   pCodigoRelatorio = 45;
   pBody = bodyGerarRelatorio2;
   gerarRelatorio(pUsuario, pTipo, pCodigoRelatorio, pBody);
-  //getGenericoComBody('/api/relatorio/pedido/venda/78', pUsuario, bodyGerarRelatorio1, 'Gerar Relatório');
+  getGenericoComBody('/api/relatorio/pedido/venda/78', pUsuario, bodyGerarRelatorio1, 'Gerar Relatório');
+}
+
+export function FluxoGerarRelatorioEspecifico(pUsuario = null) {
+  if (!pUsuario) return;
+
+  const codigoRelatorio = consultarRelatoriosEspecificos(pUsuario);
+  if (!codigoRelatorio) return;
+
+  const filtros = consultarFiltrosRelatorioEspecifico(pUsuario, codigoRelatorio);
+  if (!filtros) return;
+
+  gerarRelatorioEspecifico(pUsuario, codigoRelatorio, filtros);
 }
 
 export function FluxoIncluirPedidoVenda(pUsuario = null) {

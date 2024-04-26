@@ -2,7 +2,16 @@
 import { sleep } from 'k6';
 import { obterLog } from './Base/EstruturaRest.js';
 import { USUARIOS_VIRTUAIS, QTD_USUARIOS_VIRTUAIS, TEMPO_DURACAO_TESTE } from './Base/Constantes.js';
-import { FluxoAutenticacao, FluxoEdicaoCliente, FluxoIncluirPedidoVenda, FluxoDuplicarPedidoVenda, FluxoExcluirPedidoVenda, FluxoGerarRelatorio } from './Fluxos/Fluxos.js';
+import {
+  FluxoAutenticacao,
+  FluxoEdicaoCliente,
+  FluxoConsultarClientes,
+  FluxoExcluirPedidoVenda,
+  FluxoIncluirPedidoVenda,
+  FluxoDuplicarPedidoVenda,
+  FluxoConsultarIndicadores,
+  FluxoGerarRelatorioEspecifico
+} from './Fluxos/Fluxos.js';
 
 // Configurações do teste
 export let options = {
@@ -18,16 +27,19 @@ export default async function () {
 
   FluxoAutenticacao(usuario);
   sleep('1s');
+  FluxoConsultarClientes(usuario);
   FluxoEdicaoCliente(usuario);
   sleep('1s');
   FluxoIncluirPedidoVenda(usuario);
-  sleep('1s');
+  sleep('2s');
   FluxoExcluirPedidoVenda(usuario);
   sleep('1s');
   FluxoGerarRelatorio(usuario);
   sleep('1s');
-
+  FluxoConsultarIndicadores(usuario);
+  sleep('1s');
+  FluxoGerarRelatorioEspecifico(usuario);
+  sleep('1s');
   obterLog(usuario);
   sleep('1s');
-
 }
